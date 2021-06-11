@@ -1,0 +1,64 @@
+;It doesnt work when compared to values like 45 and 40, it will output whatever you input
+
+
+section .bss
+    num resb 2
+    large resb 2
+
+section .data
+    num1 dq  '5'
+    num2 dq '10'
+    msg db "Enter a number: "
+    len equ $ - msg
+    output db "The highest number is: "
+    len2 equ $ - output
+
+
+section .text
+global _start
+_start:
+    call _doThisFirst
+    mov rsi, [num]
+    cmp rsi, [num1]
+    jg _check_third
+    mov rsi, [num1]
+
+check_third:
+    cmp rsi, [num2]
+    jg _exit
+    mov rsi, [num2]
+
+_exit:
+    mov [large], rsi
+
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, output
+    mov rdx, len2
+    syscall
+
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, large
+    mov rdx, 2
+    syscall
+
+    mov rax, 60
+    mov rdi, 0
+    syscall
+
+_doThisFirst:
+    ;print prompt message
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, msg
+    mov rdx, len
+    syscall
+
+    ;read and input user number
+    mov rax, 0
+    mov rdi, 0
+    mov rsi, num
+    mov rdx, 5
+    syscall
+    ret
